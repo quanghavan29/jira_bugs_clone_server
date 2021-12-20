@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { config } from '../config';
 
 export async function transformPassword(user: { password?: string }): Promise<void> {
