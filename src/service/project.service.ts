@@ -25,7 +25,7 @@ export class ProjectService {
     }
 
     async findAll(): Promise<ProjectDTO[] | undefined> {
-        const result = await this.projectRepository.find({ relations: ['projectCategory'] });
+        const result = await this.projectRepository.find({ relations: ['projectCategory', 'members'] });
         const projectsDTO: ProjectDTO[] = [];
 
         result.forEach((project) => projectsDTO.push(ProjectMapper.fromEntityToDTO(project)));

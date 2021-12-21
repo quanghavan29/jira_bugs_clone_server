@@ -74,17 +74,20 @@ export class AuthService {
         return;
     }
 
-    async registerNewUser(newUser: UserDTO): Promise<UserDTO> {
+    async registerNewUser(newUser: UserDTO): Promise<any | undefined> {
         let userFind: UserDTO = await this.userService.findByFields({ where: { login: newUser.login } });
         if (userFind) {
-            throw new HttpException('Login name already used!', HttpStatus.BAD_REQUEST);
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'Username already exists!',
+            }
         }
         userFind = await this.userService.findByFields({ where: { email: newUser.email } });
         if (userFind) {
             throw new HttpException('Email is already in use!', HttpStatus.BAD_REQUEST);
         }
         newUser.authorities = ['ROLE_USER'];
-        const user: UserDTO = await this.userService.save(newUser, newUser.login, true);
+        const user: UserDTO = await this.userService.save({...newUser, activated: true}, newUser.login, true);
         return user;
     }
 

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base/base.entity";
 import { ProjectCategory } from "./project-category.entity";
 import { User } from "./user.entity";
@@ -16,4 +16,8 @@ export class Project extends BaseEntity {
 
     @ManyToOne(() => ProjectCategory, projectCategory => projectCategory.projects)
     projectCategory: ProjectCategory;
+
+    @ManyToMany(() => User)
+    @JoinTable({name: 'project_members'})
+    members?: User[];
 }

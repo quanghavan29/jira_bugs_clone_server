@@ -1,11 +1,12 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { ProjectCategoryDTO } from './project-category.dto';
 import { BaseDTO } from './base.dto';
+import { UserDTO } from './user.dto';
 
 /**
  * An Project Category DTO object.
  */
-export class ProjectDTO extends BaseDTO{
+export class ProjectDTO extends BaseDTO {
 
     @ApiModelProperty({ example: 'MyProject', description: 'Project name', required: true })
     name: string;
@@ -18,5 +19,12 @@ export class ProjectDTO extends BaseDTO{
 
     @ApiModelProperty({ example: 'MyProjectCategoryDTO', description: 'Project Category DTO object', required: false })
     projectCategory: ProjectCategoryDTO;
+
+    @ApiModelProperty({
+        isArray: true,
+        type: UserDTO,
+        description: 'List members', required: false
+    })
+    members?: UserDTO[];
 
 }
