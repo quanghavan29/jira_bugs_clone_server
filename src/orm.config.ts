@@ -20,10 +20,16 @@ function ormConfig(): TypeOrmModuleOptions {
         // username: process.env.DATABASE_USERNAME,
         // password: process.env.DATABASE_PASSWORD,
 
+        // database: 'reactjs_jira_bugs_clone',
+        // host: '103.142.26.103',
+        // port: 3306,
+        // username: 'monty29',
+        // password: '123456789',
+
         database: 'reactjs_jira_bugs_clone',
-        host: '103.142.26.103',
+        host: 'localhost',
         port: 3306,
-        username: 'monty29',
+        username: 'root',
         password: '123456789',
 
         logging: false,
@@ -38,11 +44,13 @@ function ormConfig(): TypeOrmModuleOptions {
         ormconfig = {
             name: 'default',
             type: 'mysql',
+
             database: 'reactjs_jira_bugs_clone',
-            host: '103.142.26.103',
+            host: 'localhost',
             port: 3306,
-            username: 'monty29',
+            username: 'root',
             password: '123456789',
+
             logging: false,
             synchronize: commonConf.SYNCRONIZE,
             entities: commonConf.ENTITIES,
@@ -56,11 +64,13 @@ function ormConfig(): TypeOrmModuleOptions {
         ormconfig = {
             name: 'default',
             type: 'mysql',
+
             database: 'reactjs_jira_bugs_clone',
-            host: '103.142.26.103',
+            host: 'localhost',
             port: 3306,
-            username: 'monty29',
+            username: 'root',
             password: '123456789',
+
             logging: false,
             synchronize: true,
             entities: commonConf.ENTITIES,

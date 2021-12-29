@@ -2,9 +2,10 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { ProjectCategoryDTO } from './project-category.dto';
 import { BaseDTO } from './base.dto';
 import { UserDTO } from './user.dto';
+import { TaskDTO } from './task.dto';
 
 /**
- * An Project Category DTO object.
+ * An Project DTO object.
  */
 export class ProjectDTO extends BaseDTO {
 
@@ -17,7 +18,7 @@ export class ProjectDTO extends BaseDTO {
     @ApiModelProperty({ example: 'MyDescription', description: 'Project description', required: false })
     description?: string;
 
-    @ApiModelProperty({ example: 'MyProjectCategoryDTO', description: 'Project Category DTO object', required: false })
+    @ApiModelProperty({ type: ProjectCategoryDTO, description: 'Project Category DTO object', required: false })
     projectCategory: ProjectCategoryDTO;
 
     @ApiModelProperty({
@@ -26,5 +27,12 @@ export class ProjectDTO extends BaseDTO {
         description: 'List members', required: false
     })
     members?: UserDTO[];
+
+    @ApiModelProperty({
+        isArray: true,
+        type: TaskDTO,
+        description: 'List tasks', required: false
+    })
+    tasks?: TaskDTO[];
 
 }

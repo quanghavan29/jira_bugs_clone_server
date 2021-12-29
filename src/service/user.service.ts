@@ -26,6 +26,14 @@ export class UserService {
         const result = await this.userRepository.findOne(options);
         return UserMapper.fromEntityToDTO(this.flatAuthorities(result));
     }
+    
+    async search(options: FindManyOptions<UserDTO>): Promise<UserDTO[] | undefined> {
+        const result = await this.userRepository.find(options);
+        const usersDTO: UserDTO[] = [];
+        result.forEach(user => usersDTO.push(UserMapper.fromEntityToDTO(this.flatAuthorities(user))));
+        
+        return usersDTO;
+    }
 
     async findAndCount(options: FindManyOptions<UserDTO>): Promise<[UserDTO[], number]> {
         options.relations = ['authorities'];

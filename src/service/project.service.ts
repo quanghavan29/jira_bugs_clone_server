@@ -1,9 +1,11 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not } from 'typeorm';
+import { FindManyOptions, Not } from 'typeorm';
 import { ProjectRepository } from '../repository/project.repository';
 import { ProjectDTO } from './dto/project.dto';
+import { UserDTO } from './dto/user.dto';
 import { ProjectMapper } from './mapper/project.mapper';
+import { UserMapper } from './mapper/user.mapper';
 
 @Injectable()
 export class ProjectService {
@@ -33,9 +35,18 @@ export class ProjectService {
         return projectsDTO;
     }
 
+    async findAllByOptions(options: FindManyOptions<ProjectDTO>): Promise<ProjectDTO[] | undefined> {
+        const result = await this.projectRepository.find(options);
+        const projectsDTO: ProjectDTO[] = [];
+
+        result.forEach((project) => projectsDTO.push(ProjectMapper.fromEntityToDTO(project)));
+
+        return projectsDTO;
+    }
+
     async findById(id: number): Promise<ProjectDTO | undefined> {
         const result = await this.projectRepository.findOne({
-            relations: ['projectCategory'],
+            relations: ['projectCategory', 'members'],
             where: {
                 id: id,
             }
@@ -82,5 +93,14 @@ export class ProjectService {
 
         return ProjectMapper.fromEntityToDTO(projectDeleted);
     }
+
+    async listMembers(projectId: number): Promise<UserDTO[] | undefined> {
+        const result = await this.findById(projectId);
+        const usersDTO: UserDTO[] = [];
+        result.members?.forEach(user => usersDTO.push(UserMapper.fromEntityToDTO(user)));
+        
+        return usersDTO;
+    }
+
 
 }

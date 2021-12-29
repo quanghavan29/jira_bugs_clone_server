@@ -20,8 +20,9 @@ import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { UserService } from '../../service/user.service';
+import { Like } from 'typeorm';
 
-@Controller('api/admin/users')
+@Controller('api/users')
 @UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
 @ApiBearerAuth()
@@ -29,7 +30,7 @@ import { UserService } from '../../service/user.service';
 export class UserController {
     logger = new Logger('UserController');
 
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) { }
 
     @Get('/')
     @Roles(RoleType.ADMIN)
@@ -93,17 +94,17 @@ export class UserController {
         return createdOrUpdated;
     }
 
-    @Get('/:login')
-    @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Get user' })
-    @ApiResponse({
-        status: 200,
-        description: 'The found record',
-        type: UserDTO,
-    })
-    async getUser(@Param('login') loginValue: string): Promise<UserDTO> {
-        return await this.userService.find({ where: { login: loginValue } });
-    }
+    // @Get('/:login')
+    // @Roles(RoleType.ADMIN)
+    // @ApiOperation({ title: 'Get user' })
+    // @ApiResponse({
+    //     status: 200,
+    //     description: 'The found record',
+    //     type: UserDTO,
+    // })
+    // async getUser(@Param('login') loginValue: string): Promise<UserDTO> {
+    //     return await this.userService.find({ where: { login: loginValue } });
+    // }
 
     @Delete('/:login')
     @Roles(RoleType.ADMIN)
@@ -118,4 +119,18 @@ export class UserController {
         const userToDelete = await this.userService.find({ where: { login: loginValue } });
         return await this.userService.delete(userToDelete);
     }
+
+    @Get('/search-user')
+    @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Search user' })
+    @ApiResponse({
+        status: 200,
+        description: 'The found records',
+        type: UserDTO,
+    })
+    async searchUser(@Req() req: Request): Promise<UserDTO[] | undefined> {
+        const username = req.query.username;
+        return await this.userService.search({ where: { login: Like(`%${username}%`) } });
+    }
+
 }

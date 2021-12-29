@@ -6,6 +6,7 @@ import { config } from './config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ProjectCategoryModule } from './module/project-category.module';
 import { ProjectModule } from './module/project.module';
+import { TaskModule } from './module/task.module';
 // jhipster-needle-add-entity-module-to-main-import - JHipster will import entity modules here, do not remove
 // jhipster-needle-add-controller-module-to-main-import - JHipster will import controller modules here, do not remove
 // jhipster-needle-add-service-module-to-main-import - JHipster will import service modules here, do not remove
@@ -21,6 +22,7 @@ import { ProjectModule } from './module/project.module';
 
         ProjectCategoryModule,
         ProjectModule,
+        TaskModule,
     ],
     controllers: [
         // jhipster-needle-add-controller-module-to-main - JHipster will add controller modules here, do not remove

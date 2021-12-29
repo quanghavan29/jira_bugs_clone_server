@@ -137,4 +137,5 @@ export class AccountController {
     finishPasswordReset(@Req() req: Request, @Body() keyAndPassword: string, @Res() res: Response): any {
         throw new InternalServerErrorException();
     }
+    
 }

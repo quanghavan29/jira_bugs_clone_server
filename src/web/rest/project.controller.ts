@@ -17,17 +17,18 @@ import { LoggingInterceptor } from '../../client/interceptors/logging.intercepto
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProjectDTO } from '../../service/dto/project.dto';
 import { ProjectService } from '../../service/project.service';
+import { UserDTO } from '../../service/dto/user.dto';
 
 
 @Controller('api/project')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @ApiUseTags('project-resource')
 export class ProjectController {
     logger = new Logger('ProjectController');
 
-    constructor(private readonly projectService: ProjectService) {}
+    constructor(private readonly projectService: ProjectService) { }
 
     @Post('/create-project')
     @Roles(RoleType.USER)
@@ -45,7 +46,7 @@ export class ProjectController {
     }
 
     @Get('/get-all')
-    @Roles(RoleType.USER)
+    // @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get the list of project' })
     @ApiResponse({
         status: 200,
@@ -53,14 +54,29 @@ export class ProjectController {
         type: ProjectDTO,
     })
     async getAllProject(): Promise<ProjectDTO[]> {
-        const projects =  await this.projectService.findAll();
+        const projects = await this.projectService.findAll();
 
         return projects;
     }
 
+    @Get('/get-all-project-for-select')
+    // @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Get the list of project' })
+    @ApiResponse({
+        status: 200,
+        description: 'List all project',
+        type: ProjectDTO,
+    })
+    async getAllProjectForSelect(): Promise<ProjectDTO[]> {
+        const projects = await this.projectService.findAllByOptions({});
+
+        return projects;
+    }
+
+
     @Get('/get-project-detail')
-    @Roles(RoleType.USER)
-    @ApiOperation({ title: 'Get project detail by id'})
+    // @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Get project detail by id' })
     @ApiResponse({
         status: 200,
         description: 'Project detail',
@@ -74,7 +90,7 @@ export class ProjectController {
     }
 
     @Put('/update')
-    @Roles(RoleType.USER)
+    // @Roles(RoleType.USER)
     @ApiOperation({ title: 'Update project' })
     @ApiResponse({
         status: 200,
@@ -87,8 +103,36 @@ export class ProjectController {
         return projectUpdated;
     }
 
+    @Put('/add-member')
+    // @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Update project' })
+    @ApiResponse({
+        status: 200,
+        description: 'The record has been successfully updated.',
+        type: ProjectDTO,
+    })
+    async addMember(@Body() projectDTO: ProjectDTO): Promise<ProjectDTO | undefined> {
+        const projectUpdated = await this.projectService.update(projectDTO);
+
+        return projectUpdated;
+    }
+
+    @Put('/delete-member')
+    // @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Update project' })
+    @ApiResponse({
+        status: 200,
+        description: 'The record has been successfully updated.',
+        type: ProjectDTO,
+    })
+    async deleteMember(@Body() projectDTO: ProjectDTO): Promise<ProjectDTO | undefined> {
+        const projectUpdated = await this.projectService.update(projectDTO);
+
+        return projectUpdated;
+    }
+
     @Delete('/delete')
-    @Roles(RoleType.USER)
+    // @Roles(RoleType.USER)
     @ApiOperation({ title: 'Delete project' })
     @ApiResponse({
         status: 204,
@@ -98,8 +142,21 @@ export class ProjectController {
     async deleteProject(@Req() req: Request): Promise<ProjectDTO | undefined> {
         const id = req.query.id;
         const projectDeleted = await this.projectService.delete(id);
-        
+
         return projectDeleted;
+    }
+
+    @Get('/list-members')
+    @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Search user' })
+    @ApiResponse({
+        status: 200,
+        description: 'The found records',
+        type: UserDTO,
+    })
+    async searchUserByProject(@Req() req: Request): Promise<UserDTO[] | undefined> {
+        const projectId = req.query.projectId;
+        return await this.projectService.listMembers(projectId);
     }
 
 }
