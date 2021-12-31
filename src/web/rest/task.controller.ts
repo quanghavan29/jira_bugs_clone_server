@@ -21,9 +21,9 @@ import console from 'console';
 
 
 @Controller('api/task')
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @ApiUseTags('task-resource')
 export class TaskController {
     logger = new Logger('TaskController');
@@ -46,7 +46,7 @@ export class TaskController {
     }
 
     @Get('/get-all-by-project')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get the list of task' })
     @ApiResponse({
         status: 200,
@@ -69,7 +69,7 @@ export class TaskController {
     }
 
     @Get('/get-task-detail')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get task detail by id' })
     @ApiResponse({
         status: 200,
@@ -84,7 +84,7 @@ export class TaskController {
     }
 
     @Put('/update')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Update task' })
     @ApiResponse({
         status: 200,

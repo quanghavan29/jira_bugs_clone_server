@@ -21,9 +21,9 @@ import { UserDTO } from '../../service/dto/user.dto';
 
 
 @Controller('api/project')
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @ApiUseTags('project-resource')
 export class ProjectController {
     logger = new Logger('ProjectController');
@@ -46,7 +46,7 @@ export class ProjectController {
     }
 
     @Get('/get-all')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get the list of project' })
     @ApiResponse({
         status: 200,
@@ -60,7 +60,7 @@ export class ProjectController {
     }
 
     @Get('/get-all-project-for-select')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get the list of project' })
     @ApiResponse({
         status: 200,
@@ -75,7 +75,7 @@ export class ProjectController {
 
 
     @Get('/get-project-detail')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Get project detail by id' })
     @ApiResponse({
         status: 200,
@@ -90,7 +90,7 @@ export class ProjectController {
     }
 
     @Put('/update')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Update project' })
     @ApiResponse({
         status: 200,
@@ -104,7 +104,7 @@ export class ProjectController {
     }
 
     @Put('/add-member')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Update project' })
     @ApiResponse({
         status: 200,
@@ -118,7 +118,7 @@ export class ProjectController {
     }
 
     @Put('/delete-member')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Update project' })
     @ApiResponse({
         status: 200,
@@ -132,7 +132,7 @@ export class ProjectController {
     }
 
     @Delete('/delete')
-    // @Roles(RoleType.USER)
+    @Roles(RoleType.USER)
     @ApiOperation({ title: 'Delete project' })
     @ApiResponse({
         status: 204,
