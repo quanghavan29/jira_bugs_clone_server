@@ -32,7 +32,7 @@ export class TaskService {
         return TaskMapper.fromEntityToDTO(result);
     }
 
-    async findById(id): Promise<TaskDTO | undefined> {
+    async findById(id: number): Promise<TaskDTO | undefined> {
         const result = await this.taskRepository.findOne({
             relations: ['project', 'usersAssign'],
             where: {
@@ -46,7 +46,9 @@ export class TaskService {
     async update(taskDTO: TaskDTO): Promise<TaskDTO | undefined> {
         const taskUpdate = TaskMapper.fromDTOtoEntity(taskDTO);
 
-        const taskUpdated = await this.taskRepository.save(taskUpdate);
+        const {id} = await this.taskRepository.save(taskUpdate);
+
+        const taskUpdated = await this.findById(id);
 
         return TaskMapper.fromEntityToDTO(taskUpdated);
     }
