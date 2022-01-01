@@ -6,10 +6,12 @@ import { UserMapper } from './mapper/user.mapper';
 import { UserRepository } from '../repository/user.repository';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { transformPassword } from '../security';
+import bcrypt from 'bcryptjs';
+import { config } from '../config';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
+    constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) { }
 
     async findById(id: number): Promise<UserDTO | undefined> {
         const result = await this.userRepository.findOne(id);
@@ -26,12 +28,12 @@ export class UserService {
         const result = await this.userRepository.findOne(options);
         return UserMapper.fromEntityToDTO(this.flatAuthorities(result));
     }
-    
+
     async search(options: FindManyOptions<UserDTO>): Promise<UserDTO[] | undefined> {
         const result = await this.userRepository.find(options);
         const usersDTO: UserDTO[] = [];
         result.forEach(user => usersDTO.push(UserMapper.fromEntityToDTO(this.flatAuthorities(user))));
-        
+
         return usersDTO;
     }
 
@@ -87,5 +89,23 @@ export class UserService {
             user.authorities = authorities;
         }
         return user;
+    }
+
+    async updateUserInfo(userDTO: any): Promise<UserDTO | undefined> {
+        if (userDTO.newPassword !== '') {
+            userDTO.password = await bcrypt.hash(
+                userDTO.newPassword,
+                config.get('jhipster.security.authentication.jwt.hash-salt-or-rounds'),
+            );
+            delete (userDTO.newPassword);
+        }
+
+        let userToUpdate = UserMapper.fromDTOtoEntity(userDTO);
+
+        const result = await this.userRepository.save(userToUpdate);
+
+        const userUpdated = await this.userRepository.findOne({ id: result.id });
+
+        return userUpdated;
     }
 }

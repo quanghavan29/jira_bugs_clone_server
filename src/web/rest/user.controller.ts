@@ -68,31 +68,31 @@ export class UserController {
         return created;
     }
 
-    @Put('/')
-    @Roles(RoleType.ADMIN)
-    @ApiOperation({ title: 'Update user' })
-    @ApiResponse({
-        status: 200,
-        description: 'The record has been successfully updated.',
-        type: UserDTO,
-    })
-    async updateUser(@Req() req: Request, @Body() userDTO: UserDTO): Promise<UserDTO> {
-        const userOnDb = await this.userService.find({ where: { login: userDTO.login } });
-        let updated = false;
-        if (userOnDb && userOnDb.id) {
-            userDTO.id = userOnDb.id;
-            updated = true;
-        } else {
-            userDTO.password = userDTO.login;
-        }
-        const createdOrUpdated = await this.userService.update(userDTO, req.user?.login);
-        if (updated) {
-            HeaderUtil.addEntityUpdatedHeaders(req.res, 'User', createdOrUpdated.id);
-        } else {
-            HeaderUtil.addEntityCreatedHeaders(req.res, 'User', createdOrUpdated.id);
-        }
-        return createdOrUpdated;
-    }
+    // @Put('/')
+    // @Roles(RoleType.ADMIN)
+    // @ApiOperation({ title: 'Update user' })
+    // @ApiResponse({
+    //     status: 200,
+    //     description: 'The record has been successfully updated.',
+    //     type: UserDTO,
+    // })
+    // async updateUser(@Req() req: Request, @Body() userDTO: UserDTO): Promise<UserDTO> {
+    //     const userOnDb = await this.userService.find({ where: { login: userDTO.login } });
+    //     let updated = false;
+    //     if (userOnDb && userOnDb.id) {
+    //         userDTO.id = userOnDb.id;
+    //         updated = true;
+    //     } else {
+    //         userDTO.password = userDTO.login;
+    //     }
+    //     const createdOrUpdated = await this.userService.update(userDTO, req.user?.login);
+    //     if (updated) {
+    //         HeaderUtil.addEntityUpdatedHeaders(req.res, 'User', createdOrUpdated.id);
+    //     } else {
+    //         HeaderUtil.addEntityCreatedHeaders(req.res, 'User', createdOrUpdated.id);
+    //     }
+    //     return createdOrUpdated;
+    // }
 
     // @Get('/:login')
     // @Roles(RoleType.ADMIN)
@@ -131,6 +131,19 @@ export class UserController {
     async searchUser(@Req() req: Request): Promise<UserDTO[] | undefined> {
         const username = req.query.username;
         return await this.userService.search({ where: { login: Like(`%${username}%`) } });
+    }
+
+    @Put('/update-user')
+    @Roles(RoleType.USER)
+    @ApiOperation({ title: 'Update user' })
+    @ApiResponse({
+        status: 200,
+        description: 'The record has been successfully updated.',
+        type: UserDTO,
+    })
+    async updateUserInfo(@Body() userDTO: any): Promise<UserDTO | undefined> {
+        console.log('userDTO: ', userDTO)
+        return await this.userService.updateUserInfo(userDTO);
     }
 
 }
