@@ -17,7 +17,7 @@ import { LoggingInterceptor } from '../../client/interceptors/logging.intercepto
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { TaskDTO } from '../../service/dto/task.dto';
 import { TaskService } from '../../service/task.service';
-import console from 'console';
+import { CommentService } from '../../service/comment.service';
 
 
 @Controller('api/task')
@@ -28,7 +28,8 @@ import console from 'console';
 export class TaskController {
     logger = new Logger('TaskController');
 
-    constructor(private readonly taskService: TaskService) { }
+    constructor(private readonly taskService: TaskService,
+                private readonly commetService: CommentService) { }
 
     @Post('/create-task')
     @Roles(RoleType.USER)
@@ -54,7 +55,7 @@ export class TaskController {
         type: TaskDTO,
     })
     async getAllTasksByProject(@Req() req: Request): Promise<TaskDTO[]> {
-        let {projectId, status} = req.query;
+        let { projectId, status } = req.query;
         const tasks = await this.taskService.findAll({
             relations: ['usersAssign'],
             where: {
@@ -77,10 +78,12 @@ export class TaskController {
         type: TaskDTO,
     })
     async getProjectDetail(@Req() req: Request): Promise<TaskDTO | undefined> {
-        const id = req.query.id;
-        const task = await this.taskService.findById(id);
-
-        return task
+        const taskId = req.query.id;
+        const task = await this.taskService.findById(taskId);
+        const comments = await this.commetService.findAllByTask(taskId);
+        task.comments = [...comments];
+        
+        return task;
     }
 
     @Put('/update')

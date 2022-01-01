@@ -3,6 +3,7 @@ import { ProjectCategoryDTO } from './project-category.dto';
 import { BaseDTO } from './base.dto';
 import { UserDTO } from './user.dto';
 import { ProjectDTO } from './project.dto';
+import { CommentDTO } from './comment.dto';
 
 /**
  * An Task DTO object.
@@ -45,4 +46,11 @@ export class TaskDTO extends BaseDTO {
 
     @ApiModelProperty({ example: 5, description: 'Original Estimate', required: false })
     originalEstimate?: number;
+
+    @ApiModelProperty({
+        isArray: true,
+        type: CommentDTO,
+        description: 'List comment of task', required: false
+    })
+    comments?: CommentDTO[];
 }

@@ -1,5 +1,6 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "./base/base.entity";
+import { Comment } from "./comment.entity";
 import { ProjectCategory } from "./project-category.entity";
 import { Project } from "./project.entity";
 import { User } from "./user.entity";
@@ -39,4 +40,8 @@ export class Task extends BaseEntity {
 
     @Column({default: 0})
     originalEstimate?: number;
+
+    @OneToMany(() => Comment, comment => comment.task)
+    comments?: Comment[];
+
 }
